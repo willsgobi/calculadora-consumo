@@ -39,9 +39,10 @@ class _ConsumoAppState extends State<ConsumoApp> {
       int km = int.parse(kmRodados.text);
       int lt = int.parse(litros.text);
       double result = km / lt;
+      result.toStringAsFixed(2);
 
       setState(() {
-        consumo = "$result";
+        consumo = "${result.toStringAsFixed(2)} " +  " Km/L";
       });
     }
   }
@@ -53,7 +54,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
       int result = kmA - kmB;
 
       setState(() {
-        kmRodadosTotal = "$result";
+        kmRodadosTotal = "$result" + "Km";
       });
     }
   }
@@ -63,10 +64,19 @@ class _ConsumoAppState extends State<ConsumoApp> {
       double alcool = double.parse(valorAlcool.text);
       double gasolina = double.parse(valorGasolina.text);
       double result = alcool / gasolina;
+      result.toStringAsFixed(2);
 
-      setState(() {
-        abastecer = "$result";
-      });
+      if(result < 0.7) {
+        setState(() {
+          abastecer = "${result.toStringAsFixed(2)}: com esse valor, abasteça no alcool!";
+        });
+      } else {
+        setState(() {
+          abastecer = "${result.toStringAsFixed(2)}: com esse valor, abasteça na gasolina!";
+        });
+      }
+
+
     }
   }
 
@@ -210,7 +220,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
                                 icon: Icon(MdiIcons.speedometer)),
                             keyboardType: TextInputType.number,
                           ),
-                          Text(kmRodadosTotal,
+                          Text(kmRodadosTotal + "Km",
                               style: TextStyle(fontSize: 20.0)),
                           SizedBox(
                             height: 10.0,
@@ -289,7 +299,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
                                 icon: Icon(MdiIcons.cashMultiple)),
                             keyboardType: TextInputType.number,
                           ),
-                          Text(abastecer, style: TextStyle(fontSize: 20.0)),
+                          Padding(padding: EdgeInsets.fromLTRB(30.0, 10.0, 15.0, 5.0),child: Text(abastecer, style: TextStyle(fontSize: 20.0))),
                           SizedBox(
                             height: 10.0,
                           ),
