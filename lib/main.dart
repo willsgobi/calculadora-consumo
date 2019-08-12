@@ -42,7 +42,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
       result.toStringAsFixed(2);
 
       setState(() {
-        consumo = "${result.toStringAsFixed(2)} " +  " Km/L";
+        consumo = "${result.toStringAsFixed(2)}" +  " Km/L";
       });
     }
   }
@@ -54,7 +54,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
       int result = kmA - kmB;
 
       setState(() {
-        kmRodadosTotal = "$result" + "Km";
+        kmRodadosTotal = "$result" + " Km";
       });
     }
   }
