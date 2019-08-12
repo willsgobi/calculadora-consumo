@@ -250,9 +250,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
                                     SnackBar(
                                       content: Text('Copiado com sucesso'),
                                       duration: Duration(seconds: 3),
-
                                     ));
-
                               }
                           ),
                           SizedBox(
@@ -367,8 +365,10 @@ class _ConsumoAppState extends State<ConsumoApp> {
                   ),
                 ),
               )
-            ]),
-          )),
+            ]
+          ),
+        )
+      ),
     );
   }
 }
