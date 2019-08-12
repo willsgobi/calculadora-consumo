@@ -102,6 +102,8 @@ class _ConsumoAppState extends State<ConsumoApp> {
                 ),
               ]),
             ),
+
+            // primeiro body do tabbar
             body: TabBarView(children: [
               Container(
                 padding: EdgeInsets.all(10.0),
@@ -176,6 +178,8 @@ class _ConsumoAppState extends State<ConsumoApp> {
                       ],
                     )),
               ),
+
+              //segundo body do tabbar
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: Form(
@@ -220,7 +224,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
                                 icon: Icon(MdiIcons.speedometer)),
                             keyboardType: TextInputType.number,
                           ),
-                          Text(kmRodadosTotal + "Km",
+                          Text(kmRodadosTotal,
                               style: TextStyle(fontSize: 20.0)),
                           SizedBox(
                             height: 10.0,
@@ -254,6 +258,8 @@ class _ConsumoAppState extends State<ConsumoApp> {
                   ),
                 ),
               ),
+
+              // terceiro body do tabbar
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: Form(
