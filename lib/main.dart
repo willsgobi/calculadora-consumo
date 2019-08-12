@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart'; // https://materialdesignicons.com/
+import 'package:flutter/services.dart';
 
 
 void main() => runApp(MyApp());
@@ -13,11 +14,18 @@ class MyApp extends StatelessWidget {
 }
 
 class ConsumoApp extends StatefulWidget {
+
+
   @override
   _ConsumoAppState createState() => _ConsumoAppState();
 }
 
 class _ConsumoAppState extends State<ConsumoApp> {
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+
+
   final formKeyConsumo = GlobalKey<FormState>();
   final formKeyKm = GlobalKey<FormState>();
   final formKeyCombustivel = GlobalKey<FormState>();
@@ -29,10 +37,12 @@ class _ConsumoAppState extends State<ConsumoApp> {
   final kmAtual = TextEditingController();
   final kmAnterior = TextEditingController();
   String kmRodadosTotal = "";
+  String kmRodadosTotalToClip;
 
   final valorAlcool = TextEditingController();
   final valorGasolina = TextEditingController();
   String abastecer = "";
+
 
   void rendimento() {
     if (formKeyConsumo.currentState.validate()) {
@@ -55,6 +65,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
 
       setState(() {
         kmRodadosTotal = "$result" + " Km";
+        kmRodadosTotalToClip = "$result";
       });
     }
   }
@@ -75,21 +86,22 @@ class _ConsumoAppState extends State<ConsumoApp> {
           abastecer = "${result.toStringAsFixed(2)}: com esse valor, abasteça na gasolina!";
         });
       }
-
-
     }
   }
 
   @override
   Widget build(BuildContext context) {
+
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
           length: 3,
           child: Scaffold(
+            key: _scaffoldKey,
             appBar: AppBar(
               title: Text("Meu Carro"),
-//              centerTitle: true,
+//            centerTitle: true,
               bottom: TabBar(tabs: [
                 Tab(
                   text: "Consumo",
@@ -103,8 +115,9 @@ class _ConsumoAppState extends State<ConsumoApp> {
               ]),
             ),
 
-            // primeiro body do tabbar
-            body: TabBarView(children: [
+            body: TabBarView(
+              children: [
+              // primeiro body do tabbar
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: Form(
@@ -126,7 +139,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
                                   return "O campo não pode ser nulo!";
                               },
                               decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
+                                 border: OutlineInputBorder(),
                                   labelText: "Digite a km rodada",
                                   icon: Icon(Icons.drive_eta)),
                               keyboardType: TextInputType.number,
@@ -141,7 +154,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
                                   return "O campo não pode ser nulo!";
                               },
                               decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
+                               border: OutlineInputBorder(),
                                   labelText: "Digite a quantidade de litros",
                                   icon: Icon(MdiIcons.fuel)),
                               keyboardType: TextInputType.number,
@@ -176,7 +189,8 @@ class _ConsumoAppState extends State<ConsumoApp> {
                           ],
                         ),
                       ],
-                    )),
+                    )
+                ),
               ),
 
               //segundo body do tabbar
@@ -204,7 +218,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
                                 return "O campo não pode ser nulo!";
                             },
                             decoration: InputDecoration(
-                                border: OutlineInputBorder(),
+//                              border: OutlineInputBorder(),
                                 labelText: "Digite a km atual",
                                 icon: Icon(MdiIcons.speedometer)),
                             keyboardType: TextInputType.number,
@@ -219,13 +233,28 @@ class _ConsumoAppState extends State<ConsumoApp> {
                                 return "O campo não pode ser nulo!";
                             },
                             decoration: InputDecoration(
-                                border: OutlineInputBorder(),
+//                              border: OutlineInputBorder(),
                                 labelText: "Digite a km anterior",
                                 icon: Icon(MdiIcons.speedometer)),
                             keyboardType: TextInputType.number,
                           ),
-                          Text(kmRodadosTotal,
-                              style: TextStyle(fontSize: 20.0)),
+                          InkWell(
+                              child: Text(kmRodadosTotal,
+                                  style: TextStyle(fontSize: 20.0)
+                              ),
+                              onLongPress: () {
+                                Clipboard.setData(
+                                    new ClipboardData(text: kmRodadosTotalToClip)
+                                );
+                                _scaffoldKey.currentState.showSnackBar(
+                                    SnackBar(
+                                      content: Text('Copiado com sucesso'),
+                                      duration: Duration(seconds: 3),
+
+                                    ));
+
+                              }
+                          ),
                           SizedBox(
                             height: 10.0,
                           ),
@@ -285,7 +314,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
                                 return "O campo não pode ser nulo!";
                             },
                             decoration: InputDecoration(
-                                border: OutlineInputBorder(),
+//                              border: OutlineInputBorder(),
                                 labelText: "Digite o valor do Alccol",
                                 icon: Icon(MdiIcons.cashMultiple)),
                             keyboardType: TextInputType.number,
@@ -300,7 +329,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
                                 return "O campo não pode ser nulo!";
                             },
                             decoration: InputDecoration(
-                                border: OutlineInputBorder(),
+//                              border: OutlineInputBorder(),
                                 labelText: "Digite o valor da Gasolina",
                                 icon: Icon(MdiIcons.cashMultiple)),
                             keyboardType: TextInputType.number,
@@ -343,3 +372,5 @@ class _ConsumoAppState extends State<ConsumoApp> {
     );
   }
 }
+
+
