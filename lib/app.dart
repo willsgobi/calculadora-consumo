@@ -4,17 +4,12 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:flutter/services.dart';
 
 class ConsumoApp extends StatefulWidget {
-
-
   @override
   _ConsumoAppState createState() => _ConsumoAppState();
 }
 
 class _ConsumoAppState extends State<ConsumoApp> {
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-
 
   final formKeyConsumo = GlobalKey<FormState>();
   final formKeyKm = GlobalKey<FormState>();
@@ -33,7 +28,6 @@ class _ConsumoAppState extends State<ConsumoApp> {
   final valorGasolina = TextEditingController();
   String abastecer = "";
 
-
   void rendimento() {
     if (formKeyConsumo.currentState.validate()) {
       int km = int.parse(kmRodados.text);
@@ -42,7 +36,7 @@ class _ConsumoAppState extends State<ConsumoApp> {
       result.toStringAsFixed(2);
 
       setState(() {
-        consumo = "${result.toStringAsFixed(2)}" +  " Km/L";
+        consumo = "${result.toStringAsFixed(2)}" + " Km/L";
       });
     }
   }
@@ -67,15 +61,79 @@ class _ConsumoAppState extends State<ConsumoApp> {
       double result = alcool / gasolina;
       result.toStringAsFixed(2);
 
-      if(result < 0.7) {
+      if (result < 0.7) {
         setState(() {
-          abastecer = "${result.toStringAsFixed(2)}: com esse valor, abasteça no alcool!";
+          abastecer =
+              "${result.toStringAsFixed(2)}: com esse valor, abasteça no alcool!";
         });
       } else {
         setState(() {
-          abastecer = "${result.toStringAsFixed(2)}: com esse valor, abasteça na gasolina!";
+          abastecer =
+              "${result.toStringAsFixed(2)}: com esse valor, abasteça na gasolina!";
         });
       }
+    }
+  }
+
+  String infoConsumo =
+      "No primeiro campo, insira o valor da km rodada desde seu ultimo abastecimento e no segundo campo, insira o valor de litros que você colocou no último abastecimento! O resultado será a quantidade de km que seu carro faz com um litro de combustível.";
+  String infoKm =
+      "No primeiro campo, insira a quilometragem atual de seu veículo e no segundo, insira a quilometragem antes do abastecimento. Pressionando em cima do resultado, você pode copiá-lo e utilizar na tela de calculo de consumo.";
+  String infoComparar =
+      "No primeiro campo, insira o valor atual do álcool e no segundo campo, o valor atual da gasolina. Se o resultado for menor que 0.7, compensa abastecer com álcool, se for maior, abasteça com gasolina.";
+
+  showAlertDialog1(BuildContext context, int number) {
+    // configura o button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    // configura o  AlertDialog
+    if (number == 1) {
+      AlertDialog alerta = AlertDialog(
+        elevation: 5.0,
+        content: Text(infoConsumo),
+        actions: [
+          okButton,
+        ],
+      );
+      // exibe o dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alerta;
+        },
+      );
+    } else if (number == 2) {
+      AlertDialog alerta = AlertDialog(
+        content: Text(infoKm),
+        actions: [
+          okButton,
+        ],
+      );
+      // exibe o dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alerta;
+        },
+      );
+    } else {
+      AlertDialog alerta = AlertDialog(
+        content: Text(infoComparar),
+        actions: [
+          okButton,
+        ],
+      );
+      // exibe o dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alerta;
+        },
+      );
     }
   }
 
@@ -102,261 +160,307 @@ class _ConsumoAppState extends State<ConsumoApp> {
                 ),
               ]),
             ),
-
-            body: TabBarView(
-                children: [
-                  // primeiro body do tabbar
-                  Container(
-                    padding: EdgeInsets.all(10.0),
-                    child: Form(
-                        key: formKeyConsumo,
-                        child: ListView(
+            body: TabBarView(children: [
+              // primeiro body do tabbar
+              Container(
+                padding: EdgeInsets.all(10.0),
+                child: Form(
+                    key: formKeyConsumo,
+                    child: ListView(
+                      children: <Widget>[
+                        Row(
                           children: <Widget>[
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  MdiIcons.carConvertible,
-                                  size: 80.0,
-                                  color: Colors.blueAccent,
-                                ),
-                                TextFormField(
-                                  controller: kmRodados,
-                                  validator: (value) {
-                                    if (value.isEmpty)
-                                      return "O campo não pode ser nulo!";
-                                  },
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: "Digite a km rodada",
-                                      icon: Icon(Icons.drive_eta)),
-                                  keyboardType: TextInputType.number,
-                                ),
-                                SizedBox(
-                                  height: 20.0,
-                                ),
-                                TextFormField(
-                                  controller: litros,
-                                  validator: (value) {
-                                    if (value.isEmpty)
-                                      return "O campo não pode ser nulo!";
-                                  },
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: "Digite a quantidade de litros",
-                                      icon: Icon(MdiIcons.fuel)),
-                                  keyboardType: TextInputType.number,
-                                ),
-                                Text(consumo, style: TextStyle(fontSize: 20.0)),
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: <Widget>[
-                                    RaisedButton(
-                                      onPressed: () {
-                                        rendimento();
-                                        setState(() {
-                                          kmRodados.text = "";
-                                          litros.text = "";
-                                        });
-                                      },
-                                      color: Colors.blueAccent,
-                                      child: Text("Calcular", style: TextStyle(color: Colors.white),),
-                                    ),
-                                    MaterialButton(
-                                        child: Text("Limpar"),
-                                        onPressed: (){ setState(() {
-                                          consumo = "";
-                                        });
-                                        }
-                                    )
-                                  ],
-                                )
-                              ],
+                            InkWell(
+                              onTap: () {
+                                showAlertDialog1(context, 1);
+                              },
+                              child: Icon(
+                                Icons.info,
+                                color: Colors.lightBlue,
+                              ),
                             ),
                           ],
-                        )
-                    ),
-                  ),
-
-                  //segundo body do tabbar
-                  Container(
-                    padding: EdgeInsets.all(10.0),
-                    child: Form(
-                      key: formKeyKm,
-                      child: ListView(
-                        children: <Widget>[
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(
-                                MdiIcons.carTractionControl,
-                                size: 80.0,
-                                color: Colors.blueAccent,
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                              TextFormField(
-                                controller: kmAtual,
-                                validator: (value) {
-                                  if (value.isEmpty)
-                                    return "O campo não pode ser nulo!";
-                                },
-                                decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                    labelText: "Digite a km atual",
-                                    icon: Icon(MdiIcons.speedometer)),
-                                keyboardType: TextInputType.number,
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                              TextFormField(
-                                controller: kmAnterior,
-                                validator: (value) {
-                                  if (value.isEmpty)
-                                    return "O campo não pode ser nulo!";
-                                },
-                                decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                    labelText: "Digite a km anterior",
-                                    icon: Icon(MdiIcons.speedometer)),
-                                keyboardType: TextInputType.number,
-                              ),
-                              InkWell(
-                                  child: Text(kmRodadosTotal,
-                                      style: TextStyle(fontSize: 20.0)
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              MdiIcons.carConvertible,
+                              size: 100.0,
+                              color: Colors.blueAccent,
+                            ),
+                            TextFormField(
+                              controller: kmRodados,
+                              validator: (value) {
+                                if (value.isEmpty)
+                                  return "O campo não pode ser nulo!";
+                              },
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: "Digite a km rodada",
+                                  icon: Icon(Icons.drive_eta)),
+                              keyboardType: TextInputType.number,
+                            ),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            TextFormField(
+                              controller: litros,
+                              validator: (value) {
+                                if (value.isEmpty)
+                                  return "O campo não pode ser nulo!";
+                              },
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: "Digite a quantidade de litros",
+                                  icon: Icon(MdiIcons.fuel)),
+                              keyboardType: TextInputType.number,
+                            ),
+                            Text(consumo, style: TextStyle(fontSize: 20.0)),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                RaisedButton(
+                                  onPressed: () {
+                                    rendimento();
+                                  },
+                                  color: Colors.blueAccent,
+                                  child: Text(
+                                    "Calcular",
+                                    style: TextStyle(color: Colors.white),
                                   ),
-                                  onLongPress: () {
-                                    Clipboard.setData(
-                                        new ClipboardData(text: kmRodadosTotalToClip)
-                                    );
-                                    _scaffoldKey.currentState.showSnackBar(
-                                        SnackBar(
-                                          content: Text('Copiado com sucesso'),
-                                          duration: Duration(seconds: 3),
-                                        ));
-                                  }
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  RaisedButton(
-                                    color: Colors.blueAccent,
-                                    child: Text("Calcular", style: TextStyle(color: Colors.white),),
+                                ),
+                                MaterialButton(
+                                    child: Text("Limpar"),
                                     onPressed: () {
-                                      subtrairKm();
                                       setState(() {
-                                        kmAtual.text = "";
-                                        kmAnterior.text = "";
+                                        consumo = "";
+                                        kmRodados.text = "";
+                                        litros.text = "";
                                       });
-                                    },
-                                  ),
-                                  MaterialButton(
-                                      child: Text("Limpar"),
-                                      onPressed: (){ setState(() {
-                                        kmRodadosTotal = "";
-                                      });
-                                      }
-                                  )
-                                ],
-                              )
-                            ],
+                                    })
+                              ],
+                            )
+                          ],
+                        ),
+                      ],
+                    )),
+              ),
+
+              //segundo body do tabbar
+              Container(
+                padding: EdgeInsets.all(10.0),
+                child: Form(
+                  key: formKeyKm,
+                  child: ListView(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              showAlertDialog1(context, 2);
+                            },
+                            child: Icon(
+                              Icons.info,
+                              color: Colors.lightBlue,
+                            ),
                           ),
                         ],
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                       ),
-                    ),
-                  ),
-
-                  // terceiro body do tabbar
-                  Container(
-                    padding: EdgeInsets.all(10.0),
-                    child: Form(
-                      key: formKeyCombustivel,
-                      child: ListView(
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          Icon(
+                            MdiIcons.carTractionControl,
+                            size: 80.0,
+                            color: Colors.blueAccent,
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          TextFormField(
+                            controller: kmAtual,
+                            validator: (value) {
+                              if (value.isEmpty)
+                                return "O campo não pode ser nulo!";
+                            },
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "Digite a km atual",
+                                icon: Icon(MdiIcons.speedometer)),
+                            keyboardType: TextInputType.number,
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          TextFormField(
+                            controller: kmAnterior,
+                            validator: (value) {
+                              if (value.isEmpty)
+                                return "O campo não pode ser nulo!";
+                            },
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "Digite a km anterior",
+                                icon: Icon(MdiIcons.speedometer)),
+                            keyboardType: TextInputType.number,
+                          ),
+                          InkWell(
+                              child: Text(kmRodadosTotal,
+                                  style: TextStyle(fontSize: 20.0)),
+                              onLongPress: () {
+                                Clipboard.setData(new ClipboardData(
+                                    text: kmRodadosTotalToClip));
+                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                  content: Text('Copiado com sucesso'),
+                                  duration: Duration(seconds: 3),
+                                ));
+                              }),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                              Icon(
-                                MdiIcons.squareIncCash,
-                                size: 80.0,
+                              RaisedButton(
                                 color: Colors.blueAccent,
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                              TextFormField(
-                                controller: valorAlcool,
-                                validator: (value) {
-                                  if (value.isEmpty)
-                                    return "O campo não pode ser nulo!";
+                                child: Text(
+                                  "Calcular",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onPressed: () {
+                                  subtrairKm();
                                 },
-                                decoration: InputDecoration(
+                              ),
+                              MaterialButton(
+                                  child: Text("Limpar"),
+                                  onPressed: () {
+                                    setState(() {
+                                      kmRodadosTotal = "";
+                                      kmAtual.text = "";
+                                      kmAnterior.text = "";
+                                    });
+                                  })
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // terceiro body do tabbar
+              Container(
+                padding: EdgeInsets.all(10.0),
+                child: Form(
+                  key: formKeyCombustivel,
+                  child: ListView(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              showAlertDialog1(context, 3);
+                            },
+                            child: Icon(
+                              Icons.info,
+                              color: Colors.lightBlue,
+                            ),
+                          ),
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            MdiIcons.squareIncCash,
+                            size: 80.0,
+                            color: Colors.blueAccent,
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          TextFormField(
+                            controller: valorAlcool,
+                            validator: (value) {
+                              if (value.isEmpty)
+                                return "O campo não pode ser nulo!";
+                            },
+                            decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                    labelText: "Digite o valor do Alccol",
-                                    icon: Icon(MdiIcons.cashMultiple)),
-                                keyboardType: TextInputType.number,
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                              TextFormField(
-                                controller: valorGasolina,
-                                validator: (value) {
-                                  if (value.isEmpty)
-                                    return "O campo não pode ser nulo!";
-                                },
-                                decoration: InputDecoration(
+                                labelText: "Digite o valor do Alccol",
+                                icon: Icon(MdiIcons.cashMultiple)),
+                            keyboardType: TextInputType.number,
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          TextFormField(
+                            controller: valorGasolina,
+                            validator: (value) {
+                              if (value.isEmpty)
+                                return "O campo não pode ser nulo!";
+                            },
+                            decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                    labelText: "Digite o valor da Gasolina",
-                                    icon: Icon(MdiIcons.cashMultiple)),
-                                keyboardType: TextInputType.number,
-                              ),
-                              Padding(padding: EdgeInsets.fromLTRB(30.0, 10.0, 15.0, 5.0),child: Text(abastecer, style: TextStyle(fontSize: 20.0), textAlign: TextAlign.center,)),
+                                labelText: "Digite o valor da Gasolina",
+                                icon: Icon(MdiIcons.cashMultiple)),
+                            keyboardType: TextInputType.number,
+                          ),
+                          Padding(
+                              padding:
+                                  EdgeInsets.fromLTRB(30.0, 10.0, 15.0, 5.0),
+                              child: Text(
+                                abastecer,
+                                style: TextStyle(fontSize: 20.0),
+                                textAlign: TextAlign.center,
+                              )),
 //                              SizedBox(
 //                                height: 10.0,
 //                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  RaisedButton(
-                                    color: Colors.blueAccent,
-                                    child: Text("Calcular", style: TextStyle(color: Colors.white),),
-                                    onPressed: () {
-                                      compararCombustivel();
-                                      setState(() {
-                                        valorAlcool.text = "";
-                                        valorGasolina.text = "";
-                                      });
-                                    },
-                                  ),
-                                  MaterialButton(
-                                      child: Text("Limpar"),
-                                      onPressed: (){ setState(() {
-                                        abastecer = "";
-                                      });
-                                      }
-                                  )
-                                ],
-                              )
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              RaisedButton(
+                                color: Colors.blueAccent,
+                                child: Text(
+                                  "Calcular",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onPressed: () {
+                                  compararCombustivel();
+                                },
+                              ),
+                              MaterialButton(
+                                  child: Text("Limpar"),
+                                  onPressed: () {
+                                    setState(() {
+                                      abastecer = "";
+                                      valorAlcool.text = "";
+                                      valorGasolina.text = "";
+                                    });
+                                  })
                             ],
-                          ),
+                          )
                         ],
                       ),
-                    ),
-                  )
-                ]
-            ),
-          )
-      ),
+                    ],
+                  ),
+                ),
+              )
+            ]),
+          )),
     );
   }
 }
